@@ -18,3 +18,4 @@ while command != "exit":
 	command = (clientSocket.recv(4064)).decode()
 	
 clientSocket.close()
+
