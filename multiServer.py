@@ -52,7 +52,10 @@ class BotHandler(socketserver.BaseRequestHandler):
 
 if __name__ == "__main__":
 	HOST, PORT = "192.168.1.101", 8000
-	tcpServer = socketserver.TCPServer((HOST, PORT), BotHandler)
+
+	# This line should remove an error that occurs when we try to reopen the socket quickly after closing it 
+	socketserver.TCPServer.allow_reuse_address = True
+
 	print("TCP Server enabled!")
 	try:
 		tcpServer.serve_forever()
