@@ -51,13 +51,15 @@ class BotHandler(socketserver.BaseRequestHandler):
 		#self.request.sendall(self.data.upper())
 
 if __name__ == "__main__":
+	#IMPORTANT: I thnk you need to change the host IP to whatever your kali machine's IP is
 	HOST, PORT = "192.168.1.101", 8000
 
 	# This line should remove an error that occurs when we try to reopen the socket quickly after closing it 
+	tcpServer = socketserver.TCPServer((HOST, PORT), BotHandler)
 	socketserver.TCPServer.allow_reuse_address = True
 
 	print("TCP Server enabled!")
-	try:
-		tcpServer.serve_forever()
-	except:
-		print("There was an error")
+#	try:
+	tcpServer.serve_forever()
+#	except:
+#		print("There was an error")
