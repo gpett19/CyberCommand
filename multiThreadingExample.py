@@ -1,6 +1,28 @@
 #import socket
 import threading
 import socketserver
+'''
+class BotHandler(socketserver.BaseRequestHandler):
+
+        #Handles the behaviour of the client connection
+        def handle(self):
+                self.data = self.request.recv(1024).strip()
+                print("Bot with IP {} sent:".format(self.client_address[0]))
+                print(self.data)
+                #If we don't have the while loop, the connection is "handled"
+                # once, but then once the method ends it just hangs
+                # So, the loop ensures we can keep sending commands, BUT it also
+                # takes up the entire process. 
+                # So, we basically need to multithread
+                #TODO: This will not work if we want to select which bots to send commands to.
+                while True:
+                        #Now, let's figure out how to get it to send commands instead!
+                        command =""
+                        command = input("Please enter a command: ")
+                        self.request.sendall(command.encode())
+                        message = self.request.recv(1024).strip()
+                        print(message)
+'''
 
 class ThreadedTCPRequestHandler(socketserver.BaseRequestHandler):
 
@@ -12,14 +34,6 @@ class ThreadedTCPRequestHandler(socketserver.BaseRequestHandler):
 
 class ThreadedTCPServer(socketserver.ThreadingMixIn, socketserver.TCPServer):
     pass
-'''
-def client(ip, port, message):
-    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
-        sock.connect((ip, port))
-        sock.sendall(bytes(message, 'ascii'))
-        response = str(sock.recv(1024), 'ascii')
-        print("Received: {}".format(response))
-'''
 if __name__ == "__main__":
     # Port 0 means to select an arbitrary unused port
     HOST, PORT = "", 8000
@@ -36,9 +50,4 @@ if __name__ == "__main__":
         server_thread.start()
         print("Server loop running in thread:", server_thread.name)
 
-'''
-        client(ip, port, "Hello World 1")
-        client(ip, port, "Hello World 2")
-        client(ip, port, "Hello World 3")
-'''
         server.shutdown()
