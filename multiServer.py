@@ -59,7 +59,4 @@ if __name__ == "__main__":
 	socketserver.TCPServer.allow_reuse_address = True
 
 	print("TCP Server enabled!")
-#	try:
 	tcpServer.serve_forever()
-#	except:
-#		print("There was an error")
