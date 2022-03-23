@@ -57,4 +57,4 @@ if __name__ == "__main__":
         server_thread.start()
         print("Server loop running in thread:", server_thread.name)
 
-        server.shutdown()
+        #server.shutdown()
