@@ -31,6 +31,13 @@ class ThreadedTCPRequestHandler(socketserver.BaseRequestHandler):
         cur_thread = threading.current_thread()
         response = bytes("{}: {}".format(cur_thread.name, data), 'ascii')
         self.request.sendall(response)
+        while True:
+                #Now, let's figure out how to get it to send commands instead!
+                command ="pwd"
+                self.request.sendall(command.encode())
+                message = self.request.recv(1024).strip()
+                response = bytes("{}: {}".format(cur_thread.name, message), 'ascii')
+                print(response)
 
 class ThreadedTCPServer(socketserver.ThreadingMixIn, socketserver.TCPServer):
     pass
