@@ -35,31 +35,34 @@ class ThreadedTCPRequestHandler(socketserver.BaseRequestHandler):
 
 class ThreadedTCPServer(socketserver.ThreadingMixIn, socketserver.TCPServer):
 	pass
+	
 if __name__ == "__main__":
 	# Port 0 means to select an arbitrary unused port
 	HOST, PORT = "", 8000
+	
 
 	server = ThreadedTCPServer((HOST, PORT), ThreadedTCPRequestHandler)
-
+	
 	#Fixes a bug where closing and reopening the server too quickly
 	# gives a "port already in use" error
 
 	socketserver.TCPServer.allow_reuse_address = True
 	with server:
 		ip, port = server.server_address
-
+		print("here")
 		# Start a thread with the server -- that thread will then start one
 		# more thread for each request
-		server_thread = threading.Thread(target=server.serve_forever())
+		server_thread = threading.Thread(target=server.serve_forever)
+		
 		# Exit the server thread when the main thread terminates
 		server_thread.daemon = True
 		server_thread.start()
 		print("Server loop running in thread:", server_thread.name)
 
-	while true:
-		command = input("enter a command: ")
-		bots = input("which bots should run this?").split(",")
-		for bot in bots:
-			with open("tmpfiles/" + bot + ".txt", 'w') as file:
-				file.write(command)
+		while True:
+			command = input("enter a command:\n")
+			bots = input("which bots should run this? ").split(",")
+			for bot in bots:
+				with open("tmpfiles/" + bot + ".txt", 'w') as file:
+					file.write(command)
 	#server.shutdown()
