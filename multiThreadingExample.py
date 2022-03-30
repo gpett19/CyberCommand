@@ -24,13 +24,13 @@ class ThreadedTCPRequestHandler(socketserver.BaseRequestHandler):
 					self.sendCommand(command.encode())
 					file.truncate(0)
 
-#Handles sending the command to the bot
-# Takes in a command string, and will send it, wait for a response, and then print the response. 
-def sendCommand(self, cmd):
-	self.request.sendall(cmd.encode()) #Sends the message over to the bot
-	message = self.request.recv(1024).strip().decode() #... and receives the response
-	response = bytes("{}: {}".format(self.cur_thread.name, message), 'ascii').decode()
-	print(response)
+	#Handles sending the command to the bot
+	# Takes in a command string, and will send it, wait for a response, and then print the response. 
+	def sendCommand(self, cmd):
+		self.request.sendall(cmd.encode()) #Sends the message over to the bot
+		message = self.request.recv(1024).strip().decode() #... and receives the response
+		response = bytes("{}: {}".format(self.cur_thread.name, message), 'ascii').decode()
+		print(response)
 
 
 
