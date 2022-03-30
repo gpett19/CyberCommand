@@ -20,17 +20,17 @@ class ThreadedTCPRequestHandler(socketserver.BaseRequestHandler):
 				
 			#Now, let's figure out how to get it to send commands instead!
 				command = file.readline()
-				self.sendCommand(command.encode())
-				file.truncate(0)
-        
- 
+				if command:
+					self.sendCommand(command.encode())
+					file.truncate(0)
+
 #Handles sending the command to the bot
 # Takes in a command string, and will send it, wait for a response, and then print the response. 
-  def sendCommand(self, cmd):
-    self.request.sendall(cmd.encode()) #Sends the message over to the bot
-		message = self.request.recv(1024).strip().decode() #... and receives the response
-		response = bytes("{}: {}".format(self.cur_thread.name, message), 'ascii').decode()
-		print(response)
+def sendCommand(self, cmd):
+	self.request.sendall(cmd.encode()) #Sends the message over to the bot
+	message = self.request.recv(1024).strip().decode() #... and receives the response
+	response = bytes("{}: {}".format(self.cur_thread.name, message), 'ascii').decode()
+	print(response)
 
 
 
