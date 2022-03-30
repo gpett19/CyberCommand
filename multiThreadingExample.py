@@ -3,15 +3,14 @@ import socketserver
 from os.path import exists
 
 class ThreadedTCPRequestHandler(socketserver.BaseRequestHandler):
-
 	def handle(self):
 		#Gets the connection data
 		data = str(self.request.recv(1024), 'ascii')
-		cur_thread = threading.current_thread()
+		self.cur_thread = threading.current_thread()
 		#response = bytes("{}: {}".format(cur_thread.name, data), 'ascii')
 		#self.request.sendall(response)
 		
-		thread_num = cur_thread.name.split("-")[-1]
+		thread_num = self.cur_thread.name.split("-")[-1]
 		if (not exists("./tmpfiles/" + thread_num + ".txt")):
 			f = open("tmpfiles/" + thread_num + ".txt", "x")
 			f.close()
