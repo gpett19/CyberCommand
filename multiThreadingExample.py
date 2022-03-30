@@ -21,7 +21,7 @@ class ThreadedTCPRequestHandler(socketserver.BaseRequestHandler):
 			#Now, let's figure out how to get it to send commands instead!
 				command = file.readline()
 				if command:
-					self.sendCommand(command.encode())
+					self.sendCommand(command)
 					file.truncate(0)
 
 	#Handles sending the command to the bot
