@@ -3,7 +3,6 @@ import socketserver
 
 class ThreadedTCPRequestHandler(socketserver.BaseRequestHandler):
 
-
 	#Handles the incoming bot connections
 	# NOTE that this is run once when a bot connects, and then does not repeat
 	# So, we basically need to have some sort of repeating listener that will determine when
