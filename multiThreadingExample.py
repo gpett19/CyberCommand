@@ -84,13 +84,16 @@ if __name__ == "__main__":
 		while True:
 			
 			# BELOW is meant to check the threads 
-			threads = threading.enumerate()
+			#threads = threading.enumerate()
 			#print(threading.activeCount())
-			threads_check(threads)
+			#threads_check(threads)
 			
 			command = input("enter a command:\n")
-			bots = input("which bots should run this? ").split(",").strip()
+			print(command)
+			bots = input("which bots should run this? ").split(",")
+			print(bots)
 			for bot in bots:
-				with open("tmpfiles/" + bot + ".txt", 'w') as file:
+				with open("tmpfiles/" + bot.strip() + ".txt", 'w') as file:
+					print("Writing", command)
 					file.write(command)
 	#server.shutdown()
