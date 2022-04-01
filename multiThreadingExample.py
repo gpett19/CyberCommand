@@ -89,7 +89,7 @@ if __name__ == "__main__":
 			threads_check(threads)
 			
 			command = input("enter a command:\n")
-			bots = input("which bots should run this? ").split(",")
+			bots = input("which bots should run this? ").split(",").strip()
 			for bot in bots:
 				with open("tmpfiles/" + bot + ".txt", 'w') as file:
 					file.write(command)
