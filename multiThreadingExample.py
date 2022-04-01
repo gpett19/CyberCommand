@@ -13,8 +13,11 @@ class ThreadedTCPRequestHandler(socketserver.BaseRequestHandler):
 		#response = bytes("{}: {}".format(cur_thread.name, data), 'ascii')
 		#self.request.sendall(response)
 		
-		thread_num = client_ip
-		self.cur_thread.name = client_ip
+		
+		thread_num = self.cur_thread.name.split("-")[-1]
+		client_ip = self.client_address[0]
+		
+		print("Client IP address ", client_ip, "Thread Number: ", thread_num)
 		
 		
 		if (not exists("./tmpfiles/" + thread_num + ".txt")):
@@ -45,10 +48,10 @@ class ThreadedTCPServer(socketserver.ThreadingMixIn, socketserver.TCPServer):
 def threads_check(threads):
 	for thread in threads:
 		name = thread.name
-		base = name.split("-")
-		base = base[0]
-		if base is "Thread":
-			thread.stop()    ## FIXME not actually stoping the thread
+		#base = name.split("-")
+		#base = base[0]
+		#if base is "Thread":
+		#	thread.shutdown()   ## FIXME not actually stoping the thread
 		#print(name)
 
 	
