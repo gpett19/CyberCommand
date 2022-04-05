@@ -26,7 +26,7 @@ def menu(title, choices):
 	for c in choices:
 		button = urwid.Button(c)
 		urwid.connect_signal(button, 'click', item_chosen, c) #connects the click signal to that specific function
-		body.append(urwid.AttrMap(button, None, focus_map='reversed'))
+		body.append(urwid.AttrMap(button, None, 'reversed'))
 	return urwid.ListBox(urwid.SimpleFocusListWalker(body))
 	
 def item_chosen(button, choice):

@@ -54,7 +54,9 @@ def threads_check(threads):
 		#	thread.shutdown()   ## FIXME not actually stoping the thread
 		#print(name)
 
-	
+
+
+
 if __name__ == "__main__":
 	# Port 0 means to select an arbitrary unused port
 	HOST, PORT = "", 8000
