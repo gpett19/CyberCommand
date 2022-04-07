@@ -1,7 +1,6 @@
 import threading
 import socketserver
-import urwid
-import menuInfo
+from menuInfo import *
 
 from os.path import exists
 
@@ -107,7 +106,7 @@ if __name__ == "__main__":
 		print("Server loop running in thread:", server_thread.name)
 		
 		top = HorizMenus()
-		top.open_box(menu_top.menu)
+		top.open_box(menu_top.menu, top)
 		urwid.MainLoop(urwid.Filler(top, 'middle', 10), palette).run()
 
 '''

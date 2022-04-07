@@ -1,5 +1,8 @@
+import urwid
+
 #Creates the basic class for a menu button
 # Takes in the button text (caption), and callback(action to be taken)
+#This should be fine.
 class MenuButton(urwid.Button):
 	def __init__(self, caption, callback):
 		super(MenuButton, self).__init__("")
@@ -30,6 +33,7 @@ def exit_menu(key):
 #Defines a "Bot Choice" class that will contain all the information
 # for bots
 # "info" will be a list of strings giving bot info
+# Assumes i is properly formatted
 class BotChoice(urwid.WidgetWrap):
 	def __init__(self, botNum, info):
 		super(BotChoice, self).__init__(MenuButton(botNum, self.item_chosen))
@@ -38,7 +42,7 @@ class BotChoice(urwid.WidgetWrap):
 		infoList = []
 		infoList.append(urwid.Text(["Viewing information for ", self.caption, "\n"]))
 		for i in info:
-			infoList.append(urwid.Text([i], ))
+			infoList.append(urwid.Text([i]))
 			
 
 #Random Junk that just gives colors & junk
