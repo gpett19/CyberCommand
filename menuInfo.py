@@ -38,14 +38,17 @@ class BotChoice(urwid.WidgetWrap):
 	def __init__(self, botNum, info):
 		super(BotChoice, self).__init__(MenuButton(botNum, self.item_chosen))
 		self.botNum = botNum
+		self.info = info
 	def item_chosen(self, button):
 		infoList = []
-		infoList.append(urwid.Text(["Viewing information for ", self.caption, "\n"]))
-		for i in info:
+		infoList.append(urwid.Text(["Viewing information for ", self.botNum, "\n"]))
+		for i in self.info:
 			infoList.append(urwid.Text([i]))
 			
 
 #Random Junk that just gives colors & junk
+# You can safely ignore this unless you care a lot
+# about colors for some reason
 palette = [
     (None,  'light gray', 'black'),
     ('heading', 'black', 'light gray'),
@@ -61,6 +64,9 @@ focus_map = {
     'line': 'focus line'}
 
 
+#Class that deals with all the horizontal menu construction and junk.
+# We can rearrange this to have like other menus or stuff instead
+# But let's go for this for now.
 class HorizMenus(urwid.Columns):
 	def __init__(self):
 		super(HorizMenus, self).__init__([], dividechars = 1)
@@ -71,3 +77,12 @@ class HorizMenus(urwid.Columns):
 		self.contents.append((urwid.AttrMap(box, 'options', focus_map),
 				self.options('given', 24)))
 		self.focus_position = len(self.contents) - 1
+		
+	#No clue if this will work
+	# Basically takes the "top" variable from the other class and sets it as a global
+	# here
+	#Stupid as fuck, and 1000% terrible code, but let's see if it works...
+	def make_self(self, topIn):
+		global top
+		top = topIn
+		

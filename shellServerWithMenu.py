@@ -11,6 +11,7 @@ from os.path import exists
 	Indefinitely reads commands from the respective file & executes them
 '''
 class ThreadedTCPRequestHandler(socketserver.BaseRequestHandler):
+	#Need to figure out a way to update the menu when a new bot connects...
 	def handle(self):
 	
 	
@@ -67,23 +68,14 @@ def threads_check(threads):
 #----------Apologies if you have to look below this line... -----------#
 #It's a load of poorly put-together junk 
 
-#Should return the list of bot choices for the menu
-#Right now returns junk!
-def get_bots():
-	return ["1", "2"]
 
-
-#ACTUALLY POPULATES THE MENU WITH STUFF AND OPTIONS		
-menu_top = Menu("Main Menu", [
-			Menu("Bot Information", get_bots()),
-			Menu("Send Commands", [])]) #Have get_bots return a list of bot "Choices"?
-			
 
 if __name__ == "__main__":
 	# Port 0 means to select an arbitrary unused port
 	HOST, PORT = "", 8000
 	
-
+	
+	
 	server = ThreadedTCPServer((HOST, PORT), ThreadedTCPRequestHandler)
 	
 	#Fixes a bug where closing and reopening the server too quickly
@@ -105,8 +97,33 @@ if __name__ == "__main__":
 		server_thread.start()
 		print("Server loop running in thread:", server_thread.name)
 		
+		#Should return the list of bot choices for the menu
+		#Right now returns junk!
+		def get_bots():
+			print(threading.enumerate())
+			threads = threading.enumerate()
+			botList = []
+			for thread in threads:
+				name = thread.name
+				botList.append(BotChoice(name, ["1","2"]))
+			return botList
+
+		def get_bot_count():
+			count = threading.activeCount()
+			print(count)
+			return [str(count), " bots connected"]
+				
+		
+		#ACTUALLY POPULATES THE MENU WITH STUFF AND OPTIONS
+		#Probably a bad idea to have this here...
+		menu_top = Menu("Main Menu", [
+		Menu(get_bot_count(), get_bots()),
+		Menu("Send Commands", [])]) #Have get_bots return a list of bot "Choices"?
+		
+		
 		top = HorizMenus()
-		top.open_box(menu_top.menu, top)
+		top.make_self(top)
+		top.open_box(menu_top.menu)
 		urwid.MainLoop(urwid.Filler(top, 'middle', 10), palette).run()
 
 '''
