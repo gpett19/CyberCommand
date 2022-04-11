@@ -81,8 +81,11 @@ if __name__ == "__main__":
 		server_thread.start()
 		print("Server loop running in thread:", server_thread.name)
 
-		#Returns a list of lists, each containing various info about a connected thread.
-		def get_bots():
+		#Returns a list of bots.
+		# We make this return a list so that we can wrap the bots themselves in buttons,
+		# lists, or radio button setups, instead of being restricted to one.
+		# However, this does mean that we'll have to handle them separately...
+		def get_bot_list():
 			threads = threading.enumerate()
 			print(threads)
 			botList = []
@@ -102,6 +105,15 @@ if __name__ == "__main__":
 		def process_bot_selection(w):
 			event, values = w.read()
 			
+			
+		#Takes in a list and returns a list of lists of button objects
+		def make_button(lst):
+			out = []
+			for l in lst:
+				out.append([sg.Button(l)])
+			return out
+			
+		
 		
 		#Trying menu stuff!
 		
@@ -124,11 +136,15 @@ if __name__ == "__main__":
 			elif event == "Click to see the bots...":
 				bots = get_bots()
 				if bots:
-					botWindow = sg.Window("Bots", get_bots())
-					process_bot_selection(botWindow)
+					#Makes the output into buttons
+					botWindow = sg.Window("Bots", make_button(bots))
+				else:
+					botWindow = sg.Window("Bots", [[sg.Text("No bots connected...")]])
+				process_bot_selection(botWindow)
 			elif event == "Ok":
 				command = values[0]
-				cmdWindow = sg.Window
+				print(command)
+				#cmdWindow = sg.Window("Select Bots", [])
 			
 			'''
 			command = input("enter a command:\n")
