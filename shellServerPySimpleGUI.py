@@ -75,12 +75,42 @@ if __name__ == "__main__":
 		# Start a thread with the server -- that thread will then start one
 		# more thread for each request
 		server_thread = threading.Thread(target=server.serve_forever)
-		
-		
+
 		# Exit the server thread when the main thread terminates
 		server_thread.daemon = True
 		server_thread.start()
 		print("Server loop running in thread:", server_thread.name)
+
+		#Returns a list of lists, each containing various info about a connected thread.
+		def get_bots():
+			threads = threading.enumerate()
+			print(threads)
+			botList = []
+			threads = threads[2:] #Removes the main and server threads, leaving only bot threads
+			if threads: #Checks if there are any bots connected.
+				for thread in threads:
+					name = thread.name
+									
+					botList.append(name)
+			else:
+				return 0
+			return botList
+		
+		#def thread_info(thread):
+			
+		
+		def process_bot_selection(w):
+			event, values = w.read()
+			
+		
+		#Trying menu stuff!
+		
+		layout = [[sg.Text("Bot Test...")],
+		 [sg.Button("Click to see the bots...")],
+		 [sg.Text("... or enter a command!"), sg.InputText(), sg.Button("Ok")]]
+		
+		window = sg.Window("Bot", layout)
+		
 
 		while True:
 			
@@ -88,7 +118,19 @@ if __name__ == "__main__":
 			#threads = threading.enumerate()
 			#print(threading.activeCount())
 			#threads_check(threads)
+			event, values = window.read()
+			if event == sg.WIN_CLOSED:
+				break
+			elif event == "Click to see the bots...":
+				bots = get_bots()
+				if bots:
+					botWindow = sg.Window("Bots", get_bots())
+					process_bot_selection(botWindow)
+			elif event == "Ok":
+				command = values[0]
+				cmdWindow = sg.Window
 			
+			'''
 			command = input("enter a command:\n")
 			print(command)
 			bots = input("which bots should run this? ").split(",")
@@ -97,4 +139,6 @@ if __name__ == "__main__":
 				with open("tmpfiles/" + bot.strip() + ".txt", 'w') as file:
 					print("Writing", command)
 					file.write(command)
-	#server.shutdown()
+			'''
+	window.close()
+	server.shutdown()
