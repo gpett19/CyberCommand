@@ -30,21 +30,33 @@ class Menu(urwid.WidgetWrap):
 def exit_menu(key):
 	raise urwid.ExitMainLoop()
 
+#Creates an "Info Button" that is designed to basically do nothing on click.
+#Basically just stores info.
+class InfoButton(urwid.Button):
+	def __init__(self, caption):
+		super(InfoButton, self).__init__("")
+		self._w = urwid.AttrMap(urwid.SelectableIcon(['  \N{BULLET} ', caption], 2), None, 'selected')
+		
+		
 #Defines a "Bot Choice" class that will contain all the information
 # for bots
 # "info" will be a list of strings giving bot info
 # Assumes i is properly formatted
-class BotChoice(urwid.WidgetWrap):
-	def __init__(self, botNum, info):
-		super(BotChoice, self).__init__(MenuButton(botNum, self.item_chosen))
-		self.botNum = botNum
-		self.info = info
-	def item_chosen(self, button):
-		infoList = []
-		infoList.append(urwid.Text(["Viewing information for ", self.botNum, "\n"]))
-		for i in self.info:
-			infoList.append(urwid.Text([i]))
-			
+class InfoButtonList(urwid.Pile):
+	def __init__(self, botInfo):
+		lst = []
+		for b in botInfo:
+			lst.append(InfoButton(b))
+		super(InfoButtonList, self).__init__(lst)
+		#super(BotChoice, self).__init__(InfoButton(botInfo))
+
+class CommandMenu(urwid.WidgetWrap):
+	def __init__(self, caption):
+		super(CommandMenu, self).__init__(MenuButton([caption, "\N{HORIZONTAL ELLIPSIS}"], self.open_menu))
+		line = urwid.Divider('\N{LOWER ONE QUARTER BLOCK}')
+
+
+
 
 #Random Junk that just gives colors & junk
 # You can safely ignore this unless you care a lot
