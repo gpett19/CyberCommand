@@ -21,6 +21,7 @@ class ThreadedTCPRequestHandler(socketserver.BaseRequestHandler):
 		data = str(self.request.recv(1024), 'ascii')
 		self.cur_thread = threading.current_thread()
 	
+		print(threading.local())
 		
 		thread_num = self.cur_thread.name.split("-")[-1]
 		client_ip = self.client_address[0]
@@ -100,12 +101,13 @@ if __name__ == "__main__":
 		#Should return the list of bot choices for the menu
 		#Right now returns junk!
 		def get_bots():
-			print(threading.enumerate())
 			threads = threading.enumerate()
+			print(threads)
 			botList = []
 			for thread in threads:
 				name = thread.name
-				botList.append(BotChoice(name, ["1","2"]))
+								
+				botList.append(Menu(name, [InfoButtonList([name, "1", "2"])]))
 			return botList
 
 		def get_bot_count():
@@ -118,7 +120,7 @@ if __name__ == "__main__":
 		#Probably a bad idea to have this here...
 		menu_top = Menu("Main Menu", [
 		Menu(get_bot_count(), get_bots()),
-		Menu("Send Commands", [])]) #Have get_bots return a list of bot "Choices"?
+		Menu("Send Commands", [])]) 
 		
 		
 		top = HorizMenus()
