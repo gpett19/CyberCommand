@@ -3,6 +3,8 @@ import socketserver
 import PySimpleGUI as sg #note you have to pip install pysimpleGUI
 from os.path import exists
 
+responses = []
+
 class ThreadedTCPRequestHandler(socketserver.BaseRequestHandler):
 	def handle(self):
 	
@@ -40,7 +42,13 @@ class ThreadedTCPRequestHandler(socketserver.BaseRequestHandler):
 		message = self.request.recv(1024).strip().decode() #... and receives the response
 		response = bytes("{}: {}".format(self.cur_thread.name, message), 'ascii').decode()
 		print(response)
-
+		thread_num = int(self.cur_thread.name.split("-")[-1])
+		#Put response as an entry in the "responses" array, to make it more openly accessible.
+		while thread_num >= len(responses):
+			#If the index doesn't exist, create it
+			responses.append("0")
+		responses[thread_num] = response #Then put "response" there
+	
 
 
 class ThreadedTCPServer(socketserver.ThreadingMixIn, socketserver.TCPServer):
@@ -55,6 +63,8 @@ def threads_check(threads):
 		#	thread.shutdown()   ## FIXME not actually stoping the thread
 		#print(name)
 
+
+
 	
 if __name__ == "__main__":
 	# Port 0 means to select an arbitrary unused port
@@ -67,7 +77,6 @@ if __name__ == "__main__":
 	# gives a "port already in use" error
 
 	socketserver.TCPServer.allow_reuse_address = True
-
 
 	with server:
 		ip, port = server.server_address
@@ -87,7 +96,7 @@ if __name__ == "__main__":
 		# However, this does mean that we'll have to handle them separately...
 		def get_bot_list():
 			threads = threading.enumerate()
-			print(threads)
+			#print(threads)
 			botList = []
 			threads = threads[2:] #Removes the main and server threads, leaving only bot threads
 			if threads: #Checks if there are any bots connected.
@@ -104,6 +113,8 @@ if __name__ == "__main__":
 		
 		def process_bot_selection(w):
 			event, values = w.read()
+			if event == sg.WIN_CLOSED:
+				w.close()
 			
 			
 		#Takes in a list and returns a list of lists of button objects
@@ -117,15 +128,16 @@ if __name__ == "__main__":
 		def make_checkboxes(lst):
 			out = []
 			for l in lst:
-				out.append([sg.Checkbox(l, default=True)])
-			out.append([sg.Button("Enable All", key="-ENABLE-"), sg.Button("Disable All", key='-DISABLE-')])
+				out.append([sg.Checkbox(l, default=True, k=l)])
+			#out.append([sg.Button("Enable All", key="-ENABLE-"), sg.Button("Disable All", key='-DISABLE-')])
+			return out
 			
 		
 		
 		#Trying menu stuff!
 		
 		layout = [[sg.Text("Bot Test...")],
-		 [sg.Button("Click to see the bots...")],
+		 [sg.Button("Click to see the bots...", k="-BOTLIST-")],
 		 [sg.Text("... or enter a command!"), sg.InputText(), sg.Button("Ok", bind_return_key=True)]]
 		
 		window = sg.Window("Bot", layout)
@@ -140,11 +152,12 @@ if __name__ == "__main__":
 			event, values = window.read()
 			if event == sg.WIN_CLOSED: #Ends the loop when you click "x"
 				break
-			elif event == "Click to see the bots...":
+			elif event == "-BOTLIST-":
 				bots = get_bot_list()
 				if bots:
 					#Makes the output into buttons
 					botWindow = sg.Window("Bots", make_button(bots))
+					#TODO: Need to get these buttons to actually do stuff...
 				else:
 					botWindow = sg.Window("Bots", [[sg.Text("No bots connected...")]])
 				#And deals with processing things
@@ -155,8 +168,39 @@ if __name__ == "__main__":
 				bots = get_bot_list()
 				if bots:
 					#Creates a window with checkboxes!
-					botWindow = sg.Window("Select the bots you want to run this command:", make_checkboxes(bots))
-					event, values = botWindow.read()
+					boxes = make_checkboxes(bots)
+					boxes.insert(0, [sg.Text("Select the bots you want to send command to.")])
+					boxes.append([sg.Button("Send command", key="-SEND-")])
+					botWindow = sg.Window("Select bots", boxes)
+					eventB, valuesB = botWindow.read() #Get separate event and values lists for the bot checkbox window.
+					#Now we need to check all the checkboxes...
+					#Since we are using each bot as the key for the checkbox, we get the perk that we can just loop through bots and select the junk we want to!
+					if eventB == '-SEND-':
+						toSend = []
+						for b in bots:
+							if valuesB[b]: #Check if the box is checked
+								toSend.append(b)
+						print(toSend)
+						for b in toSend:
+							with open("tmpfiles/"+ b.split("-")[1].strip() + ".txt", 'w') as file:
+								print("Writing ", command)
+								file.write(command)
+						botWindow.close()
+						#Now, we need to get the responses, and make a window with that..
+						respList = []
+						for r in responses:
+							if r != "0": #It's actually a valid response...
+								respList.append([sg.Text(str("Bot Thread-" + str(responses.index(r)))), sg.Text("returns"), sg.Text(r)])
+						respList.append([sg.Button("Ok")])
+						#print(respList)
+						respWindow = sg.Window("Bot responses", respList)
+						eventR, valuesR = respWindow.read()
+						if eventR == "Ok" or eventR == sg.WIN_CLOSED:
+							respWindow.close()
+								
+						
+						
+	 
 					
 				#cmdWindow = sg.Window("Select Bots", [])
 			
@@ -170,5 +214,6 @@ if __name__ == "__main__":
 					print("Writing", command)
 					file.write(command)
 			'''
+			
 	window.close()
 	server.shutdown()
