@@ -81,8 +81,11 @@ if __name__ == "__main__":
 		server_thread.start()
 		print("Server loop running in thread:", server_thread.name)
 
-		#Returns a list of lists, each containing various info about a connected thread.
-		def get_bots():
+		#Returns a list of bots.
+		# We make this return a list so that we can wrap the bots themselves in buttons,
+		# lists, or radio button setups, instead of being restricted to one.
+		# However, this does mean that we'll have to handle them separately...
+		def get_bot_list():
 			threads = threading.enumerate()
 			print(threads)
 			botList = []
@@ -102,12 +105,28 @@ if __name__ == "__main__":
 		def process_bot_selection(w):
 			event, values = w.read()
 			
+			
+		#Takes in a list and returns a list of lists of button objects
+		def make_button(lst):
+			out = []
+			for l in lst:
+				out.append([sg.Button(l)])
+			return out
+			
+		#Takes in a list, returns a list of lists of checkboxes!
+		def make_checkboxes(lst):
+			out = []
+			for l in lst:
+				out.append([sg.Checkbox(l, default=True)])
+			out.append([sg.Button("Enable All", key="-ENABLE-"), sg.Button("Disable All", key='-DISABLE-')])
+			
+		
 		
 		#Trying menu stuff!
 		
 		layout = [[sg.Text("Bot Test...")],
 		 [sg.Button("Click to see the bots...")],
-		 [sg.Text("... or enter a command!"), sg.InputText(), sg.Button("Ok")]]
+		 [sg.Text("... or enter a command!"), sg.InputText(), sg.Button("Ok", bind_return_key=True)]]
 		
 		window = sg.Window("Bot", layout)
 		
@@ -119,16 +138,27 @@ if __name__ == "__main__":
 			#print(threading.activeCount())
 			#threads_check(threads)
 			event, values = window.read()
-			if event == sg.WIN_CLOSED:
+			if event == sg.WIN_CLOSED: #Ends the loop when you click "x"
 				break
 			elif event == "Click to see the bots...":
-				bots = get_bots()
+				bots = get_bot_list()
 				if bots:
-					botWindow = sg.Window("Bots", get_bots())
-					process_bot_selection(botWindow)
+					#Makes the output into buttons
+					botWindow = sg.Window("Bots", make_button(bots))
+				else:
+					botWindow = sg.Window("Bots", [[sg.Text("No bots connected...")]])
+				#And deals with processing things
+				process_bot_selection(botWindow)
 			elif event == "Ok":
 				command = values[0]
-				cmdWindow = sg.Window
+				print(command)
+				bots = get_bot_list()
+				if bots:
+					#Creates a window with checkboxes!
+					botWindow = sg.Window("Select the bots you want to run this command:", make_checkboxes(bots))
+					event, values = botWindow.read()
+					
+				#cmdWindow = sg.Window("Select Bots", [])
 			
 			'''
 			command = input("enter a command:\n")
