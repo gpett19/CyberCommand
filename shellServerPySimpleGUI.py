@@ -136,8 +136,7 @@ if __name__ == "__main__":
 		
 		#Trying menu stuff!
 		
-		layout = [[sg.Text("Bot Test...")],
-		 [sg.Button("Click to see the bots...", k="-BOTLIST-")],
+		layout = [[sg.Button("Click to see the bots...", k="-BOTLIST-")],
 		 [sg.Text("... or enter a command!"), sg.InputText(), sg.Button("Ok", bind_return_key=True)]]
 		
 		window = sg.Window("Bot", layout)
