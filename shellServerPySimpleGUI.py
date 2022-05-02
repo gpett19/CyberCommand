@@ -186,10 +186,14 @@ if __name__ == "__main__":
 								file.write(command)
 						botWindow.close()
 						#Now, we need to get the responses, and make a window with that..
+						sleep(1) #Wait for responses to actually get back...
 						respList = []
 						for r in responses:
 							if r != "0": #It's actually a valid response...
 								respList.append([sg.Text(str("Bot Thread-" + str(responses.index(r)))), sg.Text("returns"), sg.Text(r)])
+						#Clear the "responses" array, so we don't get holdovers...
+						for i in range(len(responses)):
+							responses[i] = "0"
 						respList.append([sg.Button("Ok")])
 						#print(respList)
 						respWindow = sg.Window("Bot responses", respList)
