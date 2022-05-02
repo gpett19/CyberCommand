@@ -1,0 +1,10 @@
+References:
+Ethical hacking: A Hands-on Introduction to Breaking In, by Daniel Graham, No Starch Press, 2021.
+https://phoenixnap.com/kb/crontab-reboot
+https://docs.python.org/3/library/socketserver.html
+https://docs.python.org/3/library/socket.html
+https://docs.python.org/3/library/socketserver.html#socketserver.BaseServer.RequestHandlerClass
+https://www.geeksforgeeks.org/socket-programming-cc/
+https://www.activestate.com/blog/how-to-manage-threads-in-python/
+https://pysimplegui.readthedocs.io/en/latest/
+https://docs.netgate.com/pfsense/en/latest/services/dns/rebinding.html
