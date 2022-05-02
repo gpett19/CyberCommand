@@ -28,10 +28,11 @@ class ThreadedTCPRequestHandler(socketserver.BaseRequestHandler):
 			f.close()
 		while True:
 			with open("tmpfiles/" + thread_num + ".txt", 'r+') as file:
-				
+
 			#Now, let's figure out how to get it to send commands instead!
 				command = file.readline()
 				if command:
+					print("Sending", command)
 					self.sendCommand(command)
 					file.truncate(0)
 
@@ -186,7 +187,7 @@ if __name__ == "__main__":
 								file.write(command)
 						botWindow.close()
 						#Now, we need to get the responses, and make a window with that..
-						sleep(1) #Wait for responses to actually get back...
+						#sleep(1) #Wait for responses to actually get back...
 						respList = []
 						for r in responses:
 							if r != "0": #It's actually a valid response...
